@@ -1,9 +1,15 @@
 package giuliochiarenza.esercizioU5W2D3.controllers;
 
 import giuliochiarenza.esercizioU5W2D3.entities.Blog;
+
+import giuliochiarenza.esercizioU5W2D3.exceptions.BadRequestException;
+import giuliochiarenza.esercizioU5W2D3.payloads.NewBlogDTO;
+import giuliochiarenza.esercizioU5W2D3.payloads.NewBlogRespDTO;
 import giuliochiarenza.esercizioU5W2D3.services.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,8 +31,12 @@ public class BlogController {
         return this.blogService.findById(blogId);
     }
     @PostMapping
-    private Blog saveBlog(@RequestBody Blog body){
-        return this.blogService.saveBlog(body);
+    private NewBlogRespDTO saveBlog(@RequestBody @Validated NewBlogDTO body, BindingResult validation){
+        if(validation.hasErrors()){
+            System.out.println(validation.getAllErrors());
+            throw new BadRequestException(validation.getAllErrors());
+        }
+        return new NewBlogRespDTO(this.blogService.saveBlog(body).getId());
     }
     @PutMapping("/{blogId}")
     private Blog findByIdAndUpdate(@PathVariable UUID blogId, @RequestBody Blog body){

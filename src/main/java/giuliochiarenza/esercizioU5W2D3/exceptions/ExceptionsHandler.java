@@ -6,14 +6,24 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class ExceptionsHandler {
 
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST) // 400
-    public ErrorsPayload handleBadRequest(BadRequestException ex){
-        return new ErrorsPayload(ex.getMessage(), LocalDateTime.now());
+    public ErrorsPayload handleBadRequest(BadRequestException ex) {
+        if (ex.getErrorslist() != null) {
+            String message = ex.getErrorslist().stream()
+                    .map(objectError -> objectError.getDefaultMessage())
+                    .collect(Collectors.joining(". "));
+            return new ErrorsPayload(message, LocalDateTime.now());
+        } else {
+            return new ErrorsPayload(ex.getMessage(), LocalDateTime.now());
+        }
+
+
     }
 
     @ExceptionHandler(NotFoundException.class)

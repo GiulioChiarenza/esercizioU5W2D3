@@ -2,6 +2,7 @@ package giuliochiarenza.esercizioU5W2D3.services;
 
 import giuliochiarenza.esercizioU5W2D3.entities.Author;
 import giuliochiarenza.esercizioU5W2D3.exceptions.NotFoundException;
+import giuliochiarenza.esercizioU5W2D3.payloads.NewAuthorDTO;
 import giuliochiarenza.esercizioU5W2D3.repositories.AuthorDAO;
 import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,9 @@ public class AuthorService {
         return this.authorDAO.findAll(pageable);
     }
 
-    public Author saveAuthor(Author body){
-        body.setAvatar("https://ui-avatars.com/api/?name="+ body.getName() + "+" + body.getSurname());
-        return authorDAO.save(body);
+    public Author saveAuthor(NewAuthorDTO body){
+        Author newAuthor= new Author(body.name(),body.surname(),body.email(),body.birth(),"https://ui-avatars.com/api/?name="+ body.name() + "+" + body.surname());
+        return authorDAO.save(newAuthor);
     }
 
     public Author findById(UUID authorId){

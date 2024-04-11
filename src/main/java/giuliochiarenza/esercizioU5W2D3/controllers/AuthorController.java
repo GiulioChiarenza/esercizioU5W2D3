@@ -1,9 +1,14 @@
 package giuliochiarenza.esercizioU5W2D3.controllers;
 
 import giuliochiarenza.esercizioU5W2D3.entities.Author;
+import giuliochiarenza.esercizioU5W2D3.exceptions.BadRequestException;
+import giuliochiarenza.esercizioU5W2D3.payloads.NewAuthorDTO;
+import giuliochiarenza.esercizioU5W2D3.payloads.NewAuthorRespDTO;
 import giuliochiarenza.esercizioU5W2D3.services.AuthorService;
 import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,8 +30,13 @@ public class AuthorController {
         return this.authorService.findById(authorId);
     }
     @PostMapping
-    private Author saveAuthor(@RequestBody Author body){
-        return this.authorService.saveAuthor(body);
+    private NewAuthorRespDTO saveAuthor(@RequestBody @Validated NewAuthorDTO body, BindingResult validation){
+        if(validation.hasErrors()){
+            System.out.println(validation.getAllErrors());
+            throw new BadRequestException(validation.getAllErrors());
+        }
+
+        return new NewAuthorRespDTO(this.authorService.saveAuthor(body).getId());
     }
     @PutMapping("/{authorId}")
     private Author findByIdAndUpdate(@PathVariable UUID authorId, @RequestBody Author body){

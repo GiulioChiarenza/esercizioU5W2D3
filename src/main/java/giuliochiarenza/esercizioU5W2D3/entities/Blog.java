@@ -25,4 +25,14 @@ public class Blog {
     private String cover;
     private String content;
     private int readingTime;
+
+    public Blog( Author author, String category, String title, String cover, String content, int readingTime) {
+
+        this.author = author;
+        this.category = category;
+        this.title = title;
+        this.cover = cover;
+        this.content = content;
+        this.readingTime = readingTime;
+    }
 }

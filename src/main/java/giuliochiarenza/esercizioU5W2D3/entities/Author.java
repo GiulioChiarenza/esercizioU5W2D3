@@ -24,5 +24,11 @@ public class Author {
     private String avatar;
 
 
-
+    public Author( String name, String surname, String email, int birth, String avatar) {
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.birth = birth;
+        this.avatar = avatar;
+    }
 }
